@@ -1,0 +1,14 @@
+[default]
+processing=2
+host=192.168.200.3
+user=hotdb_cloud
+password=hotdb_cloud
+port=3306
+database=test
+log_level=10
+
+# 10 = DEBUG
+# 20 = INFO
+# 30 = WARNING
+# 40 = ERROR
+# 50 = CRITICAL

@@ -1,0 +1,69 @@
+此工具主要是用来收集 MySQL 实例及所在机器的相关信息。
+机器信息存放于表中,每一行表示一个实例。
+
+注意：
+    当 innodb_stats_on_metadata 打开时，收集参数时会触发收集统计信息的动作， 所以在收集实例信息之前会判断这个参数是否打开，打开就不收集实例信息
+
+目录结构：
+    MySQL_Diagnose/
+    ├── AWR_report                        ----- 存放已经在生成的 awr 报告
+    ├── README                            ----- 使用说明
+    ├── conf
+    │   └── diagnose.cnf                  ----- 配置文件，用来配置从哪获取被监控机的账号信息
+    ├── imgs
+    │   └── favicon.ico                   ----- 浏览器头部使用的小图片
+    ├── lib
+    │   ├── __init__.py
+    │   └── funcs.py                      ----- 公共函数部分
+    ├── logs
+    │   └── mysql_diagnose.log            ----- 日志文件
+    ├── machine
+    │   └── machine_html_result.py        ----- 收集机器信息的逻辑代码, 并生成 html 文本
+    ├── monitor.py                        ----- 决定要收集的内容, 可以在里面添加和删除要收集的内容
+    ├── mysql
+    │   ├── mysql_html_result.py          ----- 收集 MySQL 相关信息的逻辑代码, 并生成 html 文本
+    │   └── sys_variables_status.py       ----- 收集的当前库的比较重要的参数信息
+    ├── mysql_diagnose.py                 ----- 主文件, 直接运行即可收集信息
+    ├── requestment.txt                   ----- 依赖包文件
+    └── t.py
+
+
+准备工作：
+    1. 需要在临时库中创建一个表，用于存放要收集的机器信息，类似下面语句
+        create table diagnose_account_info(
+            id int auto_increment primary key,
+            host varchar(60),
+            mysql_account varchar(100),
+            mysql_passwd varchar(100),
+            mysql_port smallint,
+            ssh_account varchar(100),
+            ssh_passwd varchar(100),
+            ssh_port smallint
+        );
+    2. 添加要收集的主机信息
+        insert into diagnose_account_info(host, mysql_account, mysql_passwd, mysql_port, ssh_account, ssh_passwd, ssh_port)
+        values
+        ('192.168.1.4', 'root', '123456', 3306, 'root', 'root', 22),
+        ('192.168.1.5', 'root', '123456', 3306, 'root', 'root', 22)
+
+        注意: mysql 实例账号需要使用 super 权限
+
+    3. 安装依赖包
+        pip3 install requirements.txt
+
+    4. 修改配置文件中的内容
+        [default]
+        processing=2
+        host=192.168.200.3
+        user=hotdb_cloud
+        password=hotdb_cloud
+        port=3306
+        database=test
+        log_level=10
+
+
+待实现：
+    1. 显示样式， 存在问题的项目需要颜色加深显示
+    2. 打包执行，类似于exe可执行文件
+    3. 操作系统参数
+    4. io 负载
