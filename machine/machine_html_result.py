@@ -49,12 +49,16 @@ def get_host_info(os_connected_stream):
         user = (user2 - user1)/total * 100
         nice = (nice1 - nice2)/total * 100
         iowait = (iowait2 - iowait1)/total * 100
+
+        steal = (steal2-steal1)/total * 100
+
         cpu_stat_dict[item] = {}
         cpu_stat_dict[item]['idle'] = idle
         cpu_stat_dict[item]['system'] = system
         cpu_stat_dict[item]['user'] = user
         cpu_stat_dict[item]['nice'] = nice
         cpu_stat_dict[item]['iowait'] = iowait
+        cpu_stat_dict[item]['si'] = steal
 
     os_version = os_connected_stream.get_os_version()
     cpu = os_connected_stream.get_cpu_info()
@@ -136,6 +140,7 @@ def get_host_info(os_connected_stream):
                "<th class='awrbg' scope='col'>Nice</th>" \
                "<th class='awrbg' scope='col'>Iowait</th>" \
                "<th class='awrbg' scope='col'>Idle</th>" \
+               "<th class='awrbg' scope='col'></th>" \
                "</tr>"
 
     for id, item in enumerate(cpu_stat_dict):
@@ -151,12 +156,14 @@ def get_host_info(os_connected_stream):
                   "<td scope='row' class='{class_style}'>{nice}</td>" \
                   "<td scope='row' class='{class_style}'>{iowait}</td>" \
                   "<td scope='row' class='{class_style}'>{idle}</td>" \
+                  "<td scope='row' class='{class_style}'>{si}</td>" \
                   "</tr>".format(cpu=cpu,
                                  sys='{:.2f}%'.format(cpu_stat_dict[cpu]['system']),
                                  user='{:.2f}%'.format(cpu_stat_dict[cpu]['user']),
                                  nice='{:.2f}%'.format(cpu_stat_dict[cpu]['nice']),
                                  iowait='{:.2f}%'.format(cpu_stat_dict[cpu]['iowait']),
                                  idle='{:.2f}%'.format(cpu_stat_dict[cpu]['idle']),
+                                 si='{:.2f}%'.format(cpu_stat_dict[cpu]['si']),
                                  class_style=class_style
                                  )
         cpu_stat += tem_str
