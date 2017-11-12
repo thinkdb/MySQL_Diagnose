@@ -125,6 +125,7 @@ def monitor(account_info, level):
     Logger().logger(level).info('Start get machine connect handle: {host}'.format(host=host_ip))
     os_connected_stream = OsInfo(account_info['host'], account_info['ssh_account'],
                                  account_info['ssh_passwd'], account_info['ssh_port'])
+
     Logger().logger(level).info('Start get MySQL connect handle: {host}'.format(host=host_ip))
     mysql_connected_stream = MySQLBseInfo(account_info['host'], account_info['mysql_account'],
                                           account_info['mysql_passwd'], account_info['mysql_port'])
@@ -133,6 +134,8 @@ def monitor(account_info, level):
     # 获取机器信息
     get_machine_info(os_connected_stream, host_ip, level, fd)
     get_master_info(mysql_connected_stream, os_connected_stream, host_ip, level, fd)
+    os_connected_stream.close_conn()
+    mysql_connected_stream.close()
     fd.write("\n</body></html>")
     fd.flush()
     fd.close()

@@ -1,0 +1,20 @@
+{
+  "192.168.200.3": {
+    "host": "1.1.2.3",
+    "ssh_account": "root",
+    "ssh_passwd": "123456",
+    "ssh_port": 22,
+    "mysql_account": "root",
+    "mysql_port": 3306,
+    "mysql_passwd": "123456"
+  },
+  "192.168.200.4": {
+    "host": "1.4.3.4",
+    "ssh_account": "root",
+    "ssh_passwd": "123456",
+    "ssh_port": 22,
+    "mysql_account": "root",
+    "mysql_port": 3306,
+    "mysql_passwd": "123456"
+  }
+}

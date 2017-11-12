@@ -64,22 +64,26 @@ class RunRomoteCmd(object):
         self.user = ssh_user
         self.passwd = ssh_passwd
         self.port = int(ssh_port)
+        self.transport = paramiko.Transport(self.ip, self.port)
+        self.transport.connect(username=self.user, password=self.passwd)
+        self.ssh = paramiko.SSHClient()
+        self.ssh._transport = self.transport
 
     def run_cmd(self, cmd):
         try:
-            transport = paramiko.Transport(self.ip, self.port)
-            transport.connect(username=self.user, password=self.passwd)
-            ssh = paramiko.SSHClient()
-            ssh._transport = transport
-            stdin, stdout, stderr = ssh.exec_command(cmd)
+            stdin, stdout, stderr = self.ssh.exec_command(cmd)
             if len(stderr.read()) == 0:
                 data = stdout.read()
             else:
                 data = stderr.read()
-            transport.close()
             return data
         except Exception as e:
+            self.close_conn()
             Logger().logger(30).error('{ip}: '.format(ip=self.ip) + str(e))
+            sys.exit(str(e))
+
+    def close_conn(self):
+        self.transport.close()
 
 
 class OsInfo(RunRomoteCmd):
@@ -424,7 +428,6 @@ def get_config():
     section_has = config.has_section('default')
     if not section_has:
         sys.exit("Error: The '[default]' not find")
-
     processing = config.get("default", "processing")
     host = config.get("default", "host")
     user = config.get("default", "user")
@@ -432,6 +435,7 @@ def get_config():
     port = config.get("default", "port")
     database = config.get("default", "database")
     log_level = config.get("default", "log_level")
+    type = config.get("default", "type")
 
     conf_dict = {
         'processing': processing,
@@ -440,6 +444,7 @@ def get_config():
         'password': password,
         'port': port,
         'database': database,
-        'log_level': log_level
+        'log_level': log_level,
+        'type': type
     }
     return conf_dict
