@@ -97,3 +97,6 @@ database=test              # 库名
 log_level=10               # 日志级别， 10=debug, 20=info, 30=waring, 40=error, 50=critical
 type=1                     # 目标机器信息存放格式， 1为json, 非1 表示从库表中获取目标机器信息
 ```
+
+### 流程图
+![image](https://github.com/thinkdb/MySQL_Diagnose/tree/master/imgs/流程图.png)
