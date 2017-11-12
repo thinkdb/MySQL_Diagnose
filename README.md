@@ -14,7 +14,7 @@ __** 注意：__
     ├── README                            ----- 使用说明
     ├── conf
     │  ├── diagnose.cnf                   ----- 配置文件，用来配置从哪获取被监控机的账号信息
-    │  └── account_info.json              ----- 目标机器信息以 json 格式存放                 
+    │  └── account_info.json              ----- 目标机器信息以 json 格式存放
     ├── imgs
     │  └── favicon.ico                    ----- 浏览器头部使用的小图片
     ├── lib
@@ -34,8 +34,32 @@ __** 注意：__
 ```
 
 #### 准备工作：
-- 需要在临时库中创建一个表，用于存放要收集的机器信息，类似下面语句
+- 使用 json 格式时，修改 conf/account_info.json 文件，按下面模板修改
 ```
+{
+  "192.168.200.3": {
+    "host": "1.1.2.3",
+    "ssh_account": "root",
+    "ssh_passwd": "123456",
+    "ssh_port": 22,
+    "mysql_account": "root",
+    "mysql_port": 3306,
+    "mysql_passwd": "123456"
+  },
+  "192.168.200.4": {
+    "host": "1.4.3.4",
+    "ssh_account": "root",
+    "ssh_passwd": "123456",
+    "ssh_port": 22,
+    "mysql_account": "root",
+    "mysql_port": 3306,
+    "mysql_passwd": "123456"
+  }
+}
+```
+- 使用数据库方式
+  - 需要在临时库中创建一个表，用于存放要收集的机器信息，类似下面语句
+  ```
     create table diagnose_account_info(
     id int auto_increment primary key,
     host varchar(60),
@@ -46,16 +70,17 @@ __** 注意：__
     ssh_passwd varchar(100),
     ssh_port smallint
      );
-```
+  ```
 
-- 添加要收集的主机信息
-```
-insert into diagnose_account_info(host, mysql_account, mysql_passwd, mysql_port, ssh_account, ssh_passwd, ssh_port)
-values
-('192.168.1.4', 'root', '123456', 3306, 'root', 'root', 22),
-('192.168.1.5', 'root', '123456', 3306, 'root', 'root', 22)
-```
-__注意:__ mysql 实例账号需要使用 super 权限
+  - 添加要收集的主机信息
+  ```
+  insert into diagnose_account_info(host, mysql_account, mysql_passwd, mysql_port, ssh_account, ssh_passwd, ssh_port)
+  values
+  ('192.168.1.4', 'root', '123456', 3306, 'root', 'root', 22),
+  ('192.168.1.5', 'root', '123456', 3306, 'root', 'root', 22)
+  ```
+  __注意:__ mysql 实例账号需要使用 super 权限
+
 
 - 安装依赖包
 ` pip3 install requirements.txt`
