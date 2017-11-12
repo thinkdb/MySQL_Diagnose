@@ -857,7 +857,15 @@ def get_important_variables(mysql_connected_stream):
 
 def performance_analyse(mysql_connected_stream):
     my_status = mysql_connected_stream.get_global_status()
+    my_variables = mysql_connected_stream.get_global_variables()
     status_list = {}
+
+    key_block_unused = int(my_status['Key_blocks_unused'])
+    key_buffer_size = int(my_variables['key_buffer_size'])
+    key_cache_block_size = int(my_variables['key_cache_block_size'])
+
+    # 判断 key_buffer_size 是否够用
+    key_buffer_used_pre = 100 - key_block_unused * key_cache_block_size * 100 / key_buffer_size
 
     key_read_requests = int(my_status['Key_read_requests'])
     if key_read_requests:
@@ -897,6 +905,7 @@ def performance_analyse(mysql_connected_stream):
     open_files = my_status['Open_files']  # 当前打开的文件的数目
     innodb_os_log_pending_writes = my_status['Innodb_os_log_pending_writes']  # 值过大，增加 log_buffer_size
 
+    status_list['key_buffer_used_pre'] = key_buffer_used_pre
     status_list['key_buffer_read_hit'] = key_buffer_read_hit
     status_list['key_buffer_write_hit'] = key_buffer_write_hit
     status_list['binlog_buffer'] = binlog_buffer
