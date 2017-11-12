@@ -99,4 +99,4 @@ type=1                     # 目标机器信息存放格式， 1为json, 非1 �
 ```
 
 ### 流程图
-![image](https://github.com/thinkdb/MySQL_Diagnose/tree/master/imgs/flow_chart.png)
+![image](https://github.com/thinkdb/MySQL_Diagnose/blob/master/imgs/flow_chart.png)
