@@ -98,5 +98,9 @@ log_level=10               # 日志级别， 10=debug, 20=info, 30=waring, 40=er
 type=1                     # 目标机器信息存放格式， 1为json, 非1 表示从库表中获取目标机器信息
 ```
 
+### 运行方式
+进入 MySQL_Diagnose 根目录，执行下面命令即可：
+`python3 mysql_diagnose.py`
+
 ### 流程图
 ![image](https://github.com/thinkdb/MySQL_Diagnose/tree/master/imgs/flow_chart.png)
