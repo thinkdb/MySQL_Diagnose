@@ -1,6 +1,6 @@
 [default]
 processing=2
-host=192.168.200.3
+host=192.168.20.88
 user=hotdb_cloud
 password=hotdb_cloud
 port=3306

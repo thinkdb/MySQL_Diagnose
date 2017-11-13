@@ -12,15 +12,16 @@ def get_machine_info(os_connected_stream, host_ip, level, fd):
     host_info = get_host_info(os_connected_stream)
     Logger().logger(level).info('Start get machine disk info: {host}'.format(host=host_ip))
     disk_info = get_disk_info(os_connected_stream)
+    io_info = get_disk_io(os_connected_stream)
     fd.write("<h3 class='awr'>Machine Summary</h3>")
     fd.write(host_info)
     fd.write(disk_info)
+    fd.write(io_info)
 
 
 def get_master_info(mysql_connected_stream, os_connected_stream, host_ip, level, fd):
     metadata = mysql_connected_stream.my_conn.query('select @@innodb_stats_on_metadata as innodb_stats_on_metadata;')
     metadata_flag = int(metadata[0]['innodb_stats_on_metadata'])
-
     # 如果打开 innodb_stats_on_metadata, 则不收集 MySQL 相关信息
     if not metadata_flag:
         # 获取 MySQL 实例信息

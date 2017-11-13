@@ -905,6 +905,8 @@ def performance_analyse(mysql_connected_stream):
     open_files = my_status['Open_files']  # 当前打开的文件的数目
     innodb_os_log_pending_writes = my_status['Innodb_os_log_pending_writes']  # 值过大，增加 log_buffer_size
 
+    # 通过观查一段时间的 innodb_os_log_written 峰值，可以设置合理的 log_buffer_size 值
+
     status_list['key_buffer_used_pre'] = key_buffer_used_pre
     status_list['key_buffer_read_hit'] = key_buffer_read_hit
     status_list['key_buffer_write_hit'] = key_buffer_write_hit

@@ -118,30 +118,42 @@ class OsInfo(RunRomoteCmd):
                         io_stat_dict[disk_name] = {'read_io': read_io, 'write_io': write_io}
         return io_stat_dict
 
-    def get_iops(self):
+    def get_iops(self, times, interval=1):
+        if times > 10:
+            times = 10
         new_io_stat_dict = {}
-        io_data1 = self.__get_iops()
-        net_tran1 = self.get_net_tran()
-        time.sleep(1)
-        net_tran2 = self.get_net_tran()
-        io_data2 = self.__get_iops()
-        for keys in net_tran1.keys():
-            for item in net_tran2.keys():
-                if keys == item:
-                    for i in net_tran1[keys].keys():
-                        for j in net_tran2[keys].keys():
-                            if i == j:
-                                receive = int(net_tran2[keys]['Receive']) - int(net_tran1[keys]['Receive'])
-                                transmit = int(net_tran2[keys]['Transmit']) - int(net_tran1[keys]['Transmit'])
-                                new_io_stat_dict[keys] = {'Receive': receive, 'Transmit': transmit}
+        for item in range(times):
+            if item % 2 == 0:
+                new_io_stat_dict['class_style'] = 'awrc'
+            else:
+                new_io_stat_dict['class_style'] = 'awrnc'
 
-        for keys in io_data2.keys():
-            for item in io_data1.keys():
-                if keys == item:
-                    read_io = int(io_data2[keys]['read_io']) - int(io_data1[keys]['read_io'])
-                    write_io = int(io_data2[keys]['write_io']) - int(io_data1[keys]['write_io'])
-                    new_io_stat_dict[keys] = {'write_io': write_io, 'read_io': read_io}
-        return new_io_stat_dict
+            io_data1 = self.__get_iops()
+            net_tran1 = self.get_net_tran()
+            time.sleep(interval)
+            current_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
+            net_tran2 = self.get_net_tran()
+            io_data2 = self.__get_iops()
+            for keys in net_tran1.keys():
+                for item in net_tran2.keys():
+                    if keys == item:
+                        for i in net_tran1[keys].keys():
+                            for j in net_tran2[keys].keys():
+                                if i == j:
+                                    receive = int(net_tran2[keys]['Receive']) - int(net_tran1[keys]['Receive'])
+                                    transmit = int(net_tran2[keys]['Transmit']) - int(net_tran1[keys]['Transmit'])
+                                    new_io_stat_dict[keys] = {'Receive': receive, 'Transmit': transmit}
+
+            for keys in io_data2.keys():
+                for item in io_data1.keys():
+                    if keys == item:
+                        read_io = int(io_data2[keys]['read_io']) - int(io_data1[keys]['read_io'])
+                        write_io = int(io_data2[keys]['write_io']) - int(io_data1[keys]['write_io'])
+                        new_io_stat_dict[keys] = {'write_io': write_io, 'read_io': read_io}
+
+            new_io_stat_dict['time'] = current_time
+            yield new_io_stat_dict
+            # new_io_stat_dict = {}
 
     def get_disk_info(self):
         use_stat_dict = {}

@@ -183,7 +183,6 @@ def get_host_info(os_connected_stream):
 
 def get_disk_info(os_connected_stream):
     disk = os_connected_stream.get_disk_info()
-    # io = os_connected_stream.get_iops()
     table_head = "<p>DISK</p><p><table border='1' width='800'><tr>" \
                  "<th class='awrbg' scope='col'>FileSystem</th>" \
                  "<th class='awrbg' scope='col'>Mounted On</th>" \
@@ -226,3 +225,37 @@ def get_disk_info(os_connected_stream):
                                    )
         disk_str += disk_info
     return table_head+disk_str+"</table></p>"
+
+
+def get_disk_io(os_connected_stream):
+    io = os_connected_stream.get_iops(10)
+    flag = 1
+    table_head = "<p>IO and Flow Info</p><table border='1' width='1200'><tr>" \
+                 "<th class='awrbg'>Time</th>"
+    th_head = "<th class='awrbg'></th><th class='awrbg'>Input</th><th class='awrbg'>Onput</th>"
+    td_body = "<td class='{style}'>{item}</td><td class='{style}'>{v1}</td><td class='{style}'>{v2}</td>"
+    td_str = "<tr>"
+    time_str = "<td class='{style}'>{time}</td>"
+    for drivce in io:
+        class_style = drivce['class_style']
+        td_str += time_str.format(style=class_style, time=drivce['time'])
+        if flag:
+            th_head *= len(drivce) - 2
+            flag = 0
+            th_head += "</tr>"
+        for item in drivce:
+            # td
+            # network
+            if item.startswith('net'):
+                td_str += td_body.format(item=item, v1=drivce[item]['Receive'],
+                                         v2=drivce[item]['Transmit'], style=class_style)
+            elif item == 'class_style' or item == 'time':
+                pass
+            # disk
+            else:
+                td_str += td_body.format(item=item, v1=drivce[item]['write_io'],
+                                         v2=drivce[item]['read_io'], style=class_style)
+
+        td_str += '</tr>'
+    table_body = table_head + th_head + td_str + "</table>"
+    return table_body
