@@ -191,6 +191,7 @@ def get_disk_info(os_connected_stream):
                  "<th class='awrbg' scope='col'>Used (MB)</th>" \
                  "<th class='awrbg' scope='col'>Avail (MB)</th>" \
                  "<th class='awrbg' scope='col'>Use Per (%)</th>" \
+                 "<th class='awrbg' scope='col'>Inode Use Per (%)</th>" \
                  "</tr>"
     disk_str = ""
     for id, item in enumerate(disk):
@@ -214,6 +215,7 @@ def get_disk_info(os_connected_stream):
                     "<td align='right' class='{class_style}'>{Used}</td>" \
                     "<td align='right' class='{class_style}'>{Avail}</td>" \
                     "<td align='right' class='{class_style}'>{Use}</td>" \
+                    "<td align='right' class='{class_style}'>{Inode}</td>" \
                     "</tr>".format(FileSystem=file_system,
                                    mounted=disk[item]['mount_on'],
                                    FileSystemType=disk[item]['file_system_type'],
@@ -221,6 +223,7 @@ def get_disk_info(os_connected_stream):
                                    Used=disk[item]['used_mb'],
                                    Avail=disk[item]['avail_mb'],
                                    Use=disk[item]['use_per'],
+                                   Inode=disk[item]['inode'],
                                    class_style=class_style
                                    )
         disk_str += disk_info

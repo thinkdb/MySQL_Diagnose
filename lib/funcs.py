@@ -64,7 +64,11 @@ class RunRomoteCmd(object):
         self.user = ssh_user
         self.passwd = ssh_passwd
         self.port = int(ssh_port)
-        self.transport = paramiko.Transport(self.ip, self.port)
+        try:
+            self.transport = paramiko.Transport(self.ip, self.port)
+        except Exception as e:
+            Logger().logger(30).error('{ip}: '.format(ip=self.ip) + str(e))
+            print(str(e))
         self.transport.connect(username=self.user, password=self.passwd)
         self.ssh = paramiko.SSHClient()
         self.ssh._transport = self.transport
@@ -80,7 +84,7 @@ class RunRomoteCmd(object):
         except Exception as e:
             self.close_conn()
             Logger().logger(30).error('{ip}: '.format(ip=self.ip) + str(e))
-            sys.exit(str(e))
+            print(str(e))
 
     def close_conn(self):
         self.transport.close()
@@ -175,6 +179,13 @@ class OsInfo(RunRomoteCmd):
                                              "avail_mb": avail_mb,
                                              "mount_on": mount_on
                                              }
+        data_inode = self.run_cmd("df -iP")
+        inode = data_inode.decode().split('\n')
+        for line in inode[1:-1]:
+            mount_disk = line.split()[0]
+            inode_per = line.split()[4].split('%')[0]
+            use_stat_dict[mount_disk]['inode'] = inode_per
+
         return use_stat_dict
 
     def get_mem_info(self):
